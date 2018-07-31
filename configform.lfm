@@ -1,0 +1,136 @@
+object frmOptions: TfrmOptions
+  Left = 403
+  Height = 461
+  Top = 260
+  Width = 753
+  Caption = 'Настройки'
+  ClientHeight = 461
+  ClientWidth = 753
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '1.4.2.0'
+  object tvOptions: TTreeView
+    Left = 14
+    Height = 400
+    Top = 14
+    Width = 240
+    DefaultItemHeight = 18
+    PopupMenu = pmOptions
+    ReadOnly = True
+    RowSelect = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 0
+    OnSelectionChanged = tvOptionsSelectionChanged
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRowSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+  end
+  object gbParams: TGroupBox
+    Left = 262
+    Height = 400
+    Top = 14
+    Width = 482
+    Caption = 'Параметры'
+    ClientHeight = 380
+    ClientWidth = 478
+    TabOrder = 1
+    object lvParams: TListView
+      Left = 8
+      Height = 296
+      Top = 2
+      Width = 464
+      Columns = <      
+        item
+          Caption = 'Параметр'
+          Width = 150
+        end      
+        item
+          AutoSize = True
+          Caption = 'Значение'
+          Width = 310
+        end>
+      GridLines = True
+      ReadOnly = True
+      RowSelect = True
+      ScrollBars = ssAutoVertical
+      TabOrder = 0
+      ViewStyle = vsReport
+      OnSelectItem = lvParamsSelectItem
+    end
+    object btnSet: TButton
+      Left = 421
+      Height = 25
+      Top = 328
+      Width = 51
+      Caption = 'Сброс'
+      OnClick = btnSetClick
+      TabOrder = 1
+    end
+    object lbParamName: TLabel
+      Left = 11
+      Height = 16
+      Top = 309
+      Width = 407
+      AutoSize = False
+      Caption = 'Название параметра'
+      Font.Style = [fsBold]
+      ParentColor = False
+      ParentFont = False
+    end
+    object cbValue: TComboBox
+      Left = 8
+      Height = 23
+      Top = 330
+      Width = 410
+      ItemHeight = 15
+      OnChange = edValueChange
+      OnKeyDown = edValueKeyDown
+      TabOrder = 2
+    end
+  end
+  object btnCancel: TBitBtn
+    Left = 669
+    Height = 30
+    Top = 422
+    Width = 75
+    Cancel = True
+    DefaultCaption = True
+    Kind = bkCancel
+    ModalResult = 2
+    OnClick = btnCancelClick
+    TabOrder = 2
+  end
+  object btnOk: TBitBtn
+    Left = 592
+    Height = 30
+    Top = 422
+    Width = 75
+    DefaultCaption = True
+    Kind = bkOK
+    ModalResult = 1
+    OnClick = btnOkClick
+    TabOrder = 3
+  end
+  object btnApply: TBitBtn
+    Left = 14
+    Height = 30
+    Top = 422
+    Width = 75
+    DefaultCaption = True
+    Kind = bkRetry
+    ModalResult = 4
+    OnClick = btnApplyClick
+    TabOrder = 4
+  end
+  object pmOptions: TPopupMenu
+    OnPopup = pmOptionsPopup
+    left = 104
+    top = 73
+    object miAddSubitem: TMenuItem
+      Caption = 'Добавить подраздел'
+      OnClick = miAddSubitemClick
+    end
+    object miDeleteSubitem: TMenuItem
+      Caption = 'Удалить подраздел'
+      OnClick = miDeleteSubitemClick
+    end
+  end
+end

@@ -1,0 +1,230 @@
+object FrameMonServEdit: TFrameMonServEdit
+  Left = 0
+  Height = 420
+  Top = 0
+  Width = 539
+  ClientHeight = 420
+  ClientWidth = 539
+  TabOrder = 0
+  DesignLeft = 498
+  DesignTop = 386
+  object gbMonServProps: TGroupBox
+    Left = 4
+    Height = 412
+    Top = 4
+    Width = 225
+    Align = alLeft
+    BorderSpacing.Around = 4
+    Caption = 'Свойства сервиса'
+    ClientHeight = 392
+    ClientWidth = 221
+    TabOrder = 0
+    object lbName: TLabel
+      Left = 6
+      Height = 15
+      Top = 4
+      Width = 89
+      Caption = 'Внутреннее имя'
+      ParentColor = False
+    end
+    object edName: TEdit
+      Left = 6
+      Height = 23
+      Top = 20
+      Width = 208
+      ReadOnly = True
+      TabOrder = 0
+    end
+    object lbFullName: TLabel
+      Left = 6
+      Height = 15
+      Top = 44
+      Width = 137
+      Caption = 'Отображаемое название'
+      ParentColor = False
+    end
+    object edFullName: TEdit
+      Left = 6
+      Height = 23
+      Top = 60
+      Width = 208
+      TabOrder = 1
+    end
+    object lbGroup: TLabel
+      Left = 6
+      Height = 15
+      Top = 84
+      Width = 96
+      Caption = 'Название группы'
+      ParentColor = False
+    end
+    object cbGroup: TComboBox
+      Left = 6
+      Height = 23
+      Top = 100
+      Width = 208
+      ItemHeight = 15
+      TabOrder = 2
+    end
+    object lbHostName: TLabel
+      Left = 6
+      Height = 15
+      Top = 124
+      Width = 130
+      Caption = 'Имя хоста-отправителя'
+      ParentColor = False
+    end
+    object edHostName: TEdit
+      Left = 6
+      Height = 23
+      Top = 140
+      Width = 208
+      TabOrder = 3
+    end
+    object lbAppName: TLabel
+      Left = 6
+      Height = 15
+      Top = 164
+      Width = 171
+      Caption = 'Имя приложения-отправителя'
+      ParentColor = False
+    end
+    object edAppName: TEdit
+      Left = 6
+      Height = 23
+      Top = 180
+      Width = 208
+      TabOrder = 4
+    end
+    object btnOK: TButton
+      Left = 6
+      Height = 25
+      Top = 356
+      Width = 75
+      Caption = 'OK'
+      ModalResult = 1
+      OnClick = btnOKClick
+      TabOrder = 5
+    end
+    object btnCancel: TButton
+      Left = 139
+      Height = 25
+      Top = 356
+      Width = 75
+      Caption = 'Отмена'
+      ModalResult = 2
+      OnClick = btnCancelClick
+      TabOrder = 6
+    end
+    object lbIpAddr: TLabel
+      Left = 6
+      Height = 15
+      Top = 204
+      Width = 116
+      Caption = 'IP адрес отправителя'
+      ParentColor = False
+    end
+    object edIpAddr: TEdit
+      Left = 6
+      Height = 23
+      Top = 220
+      Width = 208
+      TabOrder = 7
+    end
+    object lbEncoding: TLabel
+      Left = 6
+      Height = 15
+      Top = 248
+      Width = 183
+      Caption = 'Кодировка входящих сообщений'
+      ParentColor = False
+    end
+    object cbEncoding: TComboBox
+      Left = 6
+      Height = 23
+      Top = 264
+      Width = 208
+      ItemHeight = 15
+      Items.Strings = (
+        'UTF-8'
+        'CP-1251'
+      )
+      TabOrder = 8
+    end
+  end
+  object panLeft: TPanel
+    Left = 233
+    Height = 420
+    Top = 0
+    Width = 306
+    Align = alClient
+    BevelOuter = bvNone
+    ClientHeight = 420
+    ClientWidth = 306
+    TabOrder = 1
+    object gbMuteKeywords: TGroupBox
+      Left = 4
+      Height = 303
+      Top = 113
+      Width = 298
+      Align = alClient
+      BorderSpacing.Around = 4
+      Caption = 'Ключевые слова игнора сигнала тревоги'
+      ClientHeight = 283
+      ClientWidth = 294
+      TabOrder = 0
+      object MemoMuteKeywords: TMemo
+        Left = 4
+        Height = 275
+        Top = 4
+        Width = 286
+        Align = alClient
+        BorderSpacing.Around = 4
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
+    object gbVoiceAlerts: TGroupBox
+      Left = 4
+      Height = 105
+      Top = 4
+      Width = 298
+      Align = alTop
+      BorderSpacing.Around = 4
+      Caption = 'Голосовые предупреждения'
+      ClientHeight = 85
+      ClientWidth = 294
+      TabOrder = 1
+      object lbVoiceStrWarning: TLabel
+        Left = 7
+        Height = 15
+        Top = 4
+        Width = 95
+        Caption = 'Предупреждение'
+        ParentColor = False
+      end
+      object edVoiceStrWarning: TEdit
+        Left = 7
+        Height = 23
+        Top = 20
+        Width = 281
+        TabOrder = 0
+      end
+      object lbVoiceStrCritical: TLabel
+        Left = 7
+        Height = 15
+        Top = 44
+        Width = 130
+        Caption = 'Сообщение об ошибке'
+        ParentColor = False
+      end
+      object edVoiceStrCritical: TEdit
+        Left = 7
+        Height = 23
+        Top = 60
+        Width = 281
+        TabOrder = 1
+      end
+    end
+  end
+end

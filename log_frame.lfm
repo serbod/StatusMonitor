@@ -1,0 +1,136 @@
+object LogBrowserFrame: TLogBrowserFrame
+  Left = 0
+  Height = 437
+  Top = 0
+  Width = 851
+  ClientHeight = 437
+  ClientWidth = 851
+  TabOrder = 0
+  DesignLeft = 283
+  DesignTop = 323
+  object btnUpdate: TButton
+    Left = 16
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Обновить'
+    OnClick = btnUpdateClick
+    TabOrder = 0
+  end
+  object btnLoad: TButton
+    Left = 200
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Из файла'
+    OnClick = btnLoadClick
+    TabOrder = 1
+  end
+  object btnClearLog: TButton
+    Left = 96
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Очистить'
+    OnClick = btnClearLogClick
+    TabOrder = 2
+  end
+  object cbAutoUpdate: TToggleBox
+    Left = 716
+    Height = 25
+    Top = 8
+    Width = 120
+    Caption = 'Автообновление'
+    Checked = True
+    OnChange = cbAutoUpdateChange
+    State = cbChecked
+    TabOrder = 3
+  end
+  object btnSave: TButton
+    Left = 280
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'В файл'
+    TabOrder = 4
+  end
+  object VST: TVirtualStringTree
+    Left = 7
+    Height = 392
+    Top = 40
+    Width = 833
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = 0
+    Header.Columns = <    
+      item
+        Position = 0
+        Text = 'Значимость'
+        Width = 80
+      end    
+      item
+        Position = 1
+        Text = 'Дата, время'
+        Width = 100
+      end    
+      item
+        Position = 2
+        Text = 'Адрес'
+        Width = 80
+      end    
+      item
+        Position = 3
+        Text = 'Программа'
+        Width = 100
+      end    
+      item
+        Position = 4
+        Text = 'Сообщение'
+        Width = 400
+      end>
+    Header.DefaultHeight = 22
+    Header.Height = 22
+    Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
+    Images = frmMain.ImgListIcons
+    TabOrder = 5
+    TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowHorzGridLines, toShowVertGridLines, toThemeAware, toUseBlendedImages, toFullVertGridLines]
+    TreeOptions.SelectionOptions = [toFullRowSelect]
+    OnDrawText = VSTDrawText
+    OnGetText = VSTGetText
+    OnGetImageIndex = VSTGetImageIndex
+    OnGetNodeDataSize = VSTGetNodeDataSize
+  end
+  object tmrUpdate: TTimer
+    OnTimer = tmrUpdateTimer
+    Left = 495
+    Top = 145
+  end
+  object alLog: TActionList
+    Left = 371
+    Top = 196
+    object actSaveToFile: TAction
+      Caption = 'Сохранить в файл'
+      OnExecute = actSaveToFileExecute
+    end
+    object actSaveToClipboard: TAction
+      Caption = 'Сохранить в буфер'
+      OnExecute = actSaveToClipboardExecute
+    end
+    object actSaveToAddr: TAction
+      Caption = 'Сохранить по адресу'
+    end
+  end
+  object pmLog: TPopupMenu
+    Left = 371
+    Top = 280
+    object MenuItem1: TMenuItem
+      Action = actSaveToFile
+    end
+    object MenuItem2: TMenuItem
+      Action = actSaveToClipboard
+    end
+    object MenuItem3: TMenuItem
+      Action = actSaveToAddr
+    end
+  end
+end
