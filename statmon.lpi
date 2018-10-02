@@ -52,7 +52,6 @@
           <Linking>
             <Debugging>
               <DebugInfoType Value="dsDwarf2Set"/>
-              <UseHeaptrc Value="True"/>
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <Options>
@@ -116,7 +115,7 @@
         <PackageName Value="virtualtreeview_package"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="9">
       <Unit0>
         <Filename Value="statmon.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -165,6 +164,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ConfigForm"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="simsyn.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SimSyn"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

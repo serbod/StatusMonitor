@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, MainForm, services, log_service, log_frame, laz_synapse,
-  virtualtreeview_package, MonServEditFrame;
+  virtualtreeview_package, MonServEditFrame, SimSyn;
 
 {$R *.res}
 

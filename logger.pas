@@ -107,6 +107,7 @@ procedure _LogWarning(const AMsg: string; AObj: TObject = nil);
 procedure _LogStatus(const AMsg: string);
 procedure _WaitState(IsWaiting: boolean);
 function LogRecToSyslogStr(const rec: TLogRecord; var ASyslogStr: AnsiString): Boolean;
+function LLToStr(ll: TLogLevel): string;
 procedure _LogProfiler(const AMsg: string);
 { returns info about current exception }
 function GetExceptionMessage(): string;

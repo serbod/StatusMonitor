@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, ComCtrls, StdCtrls,
   ExtCtrls, ActnList, Menus, log_service, Logger, Dialogs, Clipbrd,
-  Graphics, VirtualTrees;
+  Graphics, Buttons, VirtualTrees;
 
 const
   ERROR_COLOR   = $00BBBBFF;
@@ -18,30 +18,33 @@ type
   { TLogBrowserFrame }
   { Фрейм журнала событий }
   TLogBrowserFrame = class(TFrame)
+    actFreezeLog: TAction;
+    actClearLog: TAction;
+    actLoadFromFile: TAction;
     actSaveToAddr: TAction;
     actSaveToClipboard: TAction;
     actSaveToFile: TAction;
     alLog: TActionList;
-    btnSave: TButton;
     btnUpdate: TButton;
-    btnLoad: TButton;
     btnClearLog: TButton;
+    cbFreezelog: TCheckBox;
+    edFilterStr: TEdit;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
     pmLog: TPopupMenu;
     tmrUpdate: TTimer;
-    cbAutoUpdate: TToggleBox;
     VST: TVirtualStringTree;
+    procedure actClearLogExecute(Sender: TObject);
+    procedure actFreezeLogExecute(Sender: TObject);
+    procedure actLoadFromFileExecute(Sender: TObject);
     procedure actSaveToClipboardExecute(Sender: TObject);
     procedure actSaveToFileExecute(Sender: TObject);
-    procedure btnClearLogClick(Sender: TObject);
-    procedure btnLoadClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
-    procedure cbAutoUpdateChange(Sender: TObject);
-    procedure lvLogCustomDrawItem(Sender: TCustomListView; Item: TListItem;
-      State: TCustomDrawState; var DefaultDraw: Boolean);
-    procedure lvLogData(Sender: TObject; Item: TListItem);
+    procedure edFilterStrChange(Sender: TObject);
     procedure tmrUpdateTimer(Sender: TObject);
     procedure VSTDrawText(Sender: TBaseVirtualTree; TargetCanvas: TCanvas;
       Node: PVirtualNode; Column: TColumnIndex; const CellText: String;
@@ -49,8 +52,6 @@ type
     procedure VSTGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Kind: TVTImageKind; Column: TColumnIndex; var Ghosted: Boolean;
       var ImageIndex: Integer);
-    procedure VSTGetNodeDataSize(Sender: TBaseVirtualTree;
-      var NodeDataSize: Integer);
     procedure VSTGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
   private
@@ -58,15 +59,14 @@ type
   public
     { public declarations }
     Log: TSysLog;
-    procedure UpdateLogItem(LogItem: ILogItem; li: TListItem);
     procedure UpdateLog();
     procedure AfterConstruction; override;
   end;
 
-  PTreeData = ^TTreeData;
+  {PTreeData = ^TTreeData;
   TTreeData = record
-    Item: TLogItem;
-  end;
+    ItemIndex: Integer;
+  end; }
 
 implementation
 
@@ -87,47 +87,9 @@ begin
   UpdateLog();
 end;
 
-procedure TLogBrowserFrame.cbAutoUpdateChange(Sender: TObject);
+procedure TLogBrowserFrame.edFilterStrChange(Sender: TObject);
 begin
-  tmrUpdate.Enabled := cbAutoUpdate.Checked;
-end;
-
-procedure TLogBrowserFrame.lvLogCustomDrawItem(Sender: TCustomListView;
-  Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
-var
-  LogItem: ILogItem;
-  BgColor: TColor;
-  n: integer;
-begin
-  BgColor := clWindow;
-  n := Item.Index;
-  if n < Log.Count then
-  begin
-    LogItem := Log.GetItem(n);
-    if Assigned(LogItem) then
-    begin
-      case LogItem.GetSeverity() of
-        0..3: BgColor := ERROR_COLOR; // critical
-        4..4: BgColor := WARNING_COLOR; // non-critical
-        5..5: BgColor := NOTE_COLOR;
-        6..7: BgColor := clWindow; // normal
-      end;
-    end;
-  end;
-  Sender.Canvas.Brush.Color := BgColor;
-end;
-
-procedure TLogBrowserFrame.lvLogData(Sender: TObject; Item: TListItem);
-var
-  n: integer;
-  LogItem: ILogItem;
-begin
-  n := Item.Index;
-  if n < Log.Count then
-  begin
-    LogItem := Log.GetItem(n);
-    UpdateLogItem(LogItem, Item);
-  end;
+  Log.FilterStr := edFilterStr.Text;
 end;
 
 procedure TLogBrowserFrame.tmrUpdateTimer(Sender: TObject);
@@ -140,20 +102,17 @@ procedure TLogBrowserFrame.VSTDrawText(Sender: TBaseVirtualTree;
   const CellText: String; const CellRect: TRect; var DefaultDraw: Boolean);
 var
   BgColor: TColor;
-  LogItem: ILogItem;
+  ll: TLogLevel;
 begin
   DefaultDraw := True;
-  LogItem := Log.GetItem(Node^.Index);
-  BgColor := clWindow;
-  if Assigned(LogItem) then
-  begin
-    case LogItem.GetSeverity() of
-      0..3: BgColor := ERROR_COLOR; // critical
-      4..4: BgColor := WARNING_COLOR; // non-critical
-      5..5: BgColor := NOTE_COLOR;
-      6..7: BgColor := clWindow; // normal
-    else
-    end;
+  ll := Log.GetItemLoglevel(Node^.Index);
+  case Ord(ll) of
+    0..3: BgColor := ERROR_COLOR; // critical
+    4..4: BgColor := WARNING_COLOR; // non-critical
+    5..5: BgColor := NOTE_COLOR;
+    6..7: BgColor := clWindow; // normal
+  else
+    BgColor := clWindow;
   end;
   Sender.Canvas.Brush.Color := BgColor;
 end;
@@ -162,12 +121,12 @@ procedure TLogBrowserFrame.VSTGetImageIndex(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Kind: TVTImageKind; Column: TColumnIndex;
   var Ghosted: Boolean; var ImageIndex: Integer);
 var
-  LogItem: ILogItem;
+  ll: TLogLevel;
 begin
-  LogItem := Log.GetItem(Node^.Index);
   if Column = 0 then
   begin
-    case LogItem.GetSeverity() of
+    ll := Log.GetItemLoglevel(Node^.Index);
+    case Ord(ll) of
       0..3: ImageIndex := 1; // critical
       4..5: ImageIndex := 2; // non-critical
       6..7: ImageIndex := 0; // normal
@@ -175,62 +134,41 @@ begin
   end;
 end;
 
-procedure TLogBrowserFrame.VSTGetNodeDataSize(Sender: TBaseVirtualTree;
-  var NodeDataSize: Integer);
-begin
-  NodeDataSize := SizeOf(TTreeData);
-end;
-
 procedure TLogBrowserFrame.VSTGetText(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType;
   var CellText: String);
 var
-  LogRec: TLogRecord;
+  //LogRec: TLogRecord;
+  LogItem: TLogItem;
 begin
-  if not Log.GetItemRec(Node^.Index, LogRec) then Exit;
-  case Column of
-    // Значимость
-    0: CellText := SeverityStr(LogRec);
-    // Дата, время
-    1: CellText := FormatDateTime('YYYY-MM-DD HH:MM:SS', LogRec.Timestamp);
-    // Адрес
-    2: CellText := LogRec.IpAddress + ' ' + LogRec.Hostname;
-    // Программа
-    3: CellText := LogRec.Appname;
-    // Сообщение
-    4: CellText := LogRec.Text;
+  if Log.RWLock.BeginRead() then
+  begin
+    LogItem := Log.GetItem(Node^.Index);
+    if Assigned(LogItem) then
+    begin
+      case Column of
+        // Значимость
+        0: CellText := LLToStr(LogItem.LogLevel);
+        // Дата, время
+        1: CellText := FormatDateTime('YYYY-MM-DD HH:MM:SS', LogItem.Timestamp);
+        // Адрес
+        2:
+        begin
+          CellText := '';
+          if LogItem.IpAddress <> 0 then
+            CellText := LongWordToIPStr(LogItem.IpAddress) + ' ';
+
+          CellText := CellText + Log.GetHostnameByIndex(LogItem.HostnameID);
+        end;
+        // Программа
+        3: CellText := Log.GetAppnameByIndex(LogItem.AppnameID);
+        // Сообщение
+        4: CellText := LogItem.Text;
+      end;
+
+    end;
+    Log.RWLock.EndRead();
   end;
-end;
-
-procedure TLogBrowserFrame.UpdateLogItem(LogItem: ILogItem; li: TListItem);
-var
-  LogRec: TLogRecord;
-begin
-  LogItem.GetLogRec(LogRec);
-  //li.Data := LogItem;
-  li.Caption := SeverityStr(LogRec);
-  case LogRec.Severity of
-    0..3: li.ImageIndex := 1; // critical
-    4..5: li.ImageIndex := 2; // non-critical
-    6..7: li.ImageIndex := 0; // normal
-  end;
-  li.SubItems.Clear();
-  li.SubItems.Add(FormatDateTime('YYYY-MM-DD HH:MM:SS', LogRec.Timestamp));
-  li.SubItems.Add(LogRec.IpAddress + ' ' + LogRec.Hostname);
-  li.SubItems.Add(LogRec.Appname);
-  li.SubItems.Add(LogRec.Text);
-end;
-
-procedure TLogBrowserFrame.btnLoadClick(Sender: TObject);
-begin
-  Log.FromFile(Log.FileName);
-  UpdateLog();
-end;
-
-procedure TLogBrowserFrame.btnClearLogClick(Sender: TObject);
-begin
-  Log.Clear();
-  UpdateLog();
 end;
 
 procedure TLogBrowserFrame.actSaveToFileExecute(Sender: TObject);
@@ -264,6 +202,24 @@ begin
   finally
     sl.Free();
   end;
+end;
+
+procedure TLogBrowserFrame.actFreezeLogExecute(Sender: TObject);
+begin
+  Log.Freeze := not Log.Freeze;
+  actFreezeLog.Checked := Log.Freeze;
+end;
+
+procedure TLogBrowserFrame.actLoadFromFileExecute(Sender: TObject);
+begin
+  Log.FromFile(Log.FileName);
+  UpdateLog();
+end;
+
+procedure TLogBrowserFrame.actClearLogExecute(Sender: TObject);
+begin
+  Log.Clear();
+  UpdateLog();
 end;
 
 procedure TLogBrowserFrame.UpdateLog();
@@ -303,7 +259,7 @@ begin
     VST.FocusedNode := VST.GetLast();
   //PostMessage(VST.Handle, WM_VSCROLL, SB_BOTTOM, 0);
 
-  tmrUpdate.Enabled := cbAutoUpdate.Checked;
+  //tmrUpdate.Enabled := True;
 end;
 
 procedure TLogBrowserFrame.AfterConstruction;
